@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id          Int     @id @default(autoincrement())
+  email            String  @unique
+  password         String
+  username         String
+  role             Role    @default(USER)
+  is_blocked       Boolean @default(false)
+  is_email_confirm Boolean @default(false)
+
+  accounts              Account[]
+  deposits              Deposit[]
+  transactions          SentTransaction[]
+  received_transactions ReceivedTransaction[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Account {
+  account_id Int      @id @default(autoincrement())
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  balance    Decimal  @default(0.0)
+  currency   Currency
+
+  transactions          SentTransaction[]
+  received_transactions ReceivedTransaction[]
+  deposits              Deposit[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("accounts")
+}
+
+model Deposit {
+  deposit_id    Int      @id @default(autoincrement())
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  account_id    Int
+  account       Account  @relation(fields: [account_id], references: [account_id], onDelete: Cascade)
+  amount        Decimal
+  interest_rate Float
+  start_date    DateTime @default(now())
+  end_date      DateTime
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("deposits")
+}
+
+model SentTransaction {
+  transaction_id    Int      @id @default(autoincrement())
+  sender_id         Int
+  sender            User     @relation(fields: [sender_id], references: [user_id], onDelete: Cascade)
+  sender_account_id Int
+  sender_account    Account  @relation(fields: [sender_account_id], references: [account_id], onDelete: Cascade)
+  amount            Decimal
+  currency          Currency
+  created_at        DateTime @default(now())
+
+  @@map("sent_transactions")
+}
+
+model ReceivedTransaction {
+  transaction_id      Int      @id @default(autoincrement())
+  receiver_id         Int
+  receiver            User     @relation(fields: [receiver_id], references: [user_id], onDelete: Cascade)
+  receiver_account_id Int
+  receiver_account    Account  @relation(fields: [receiver_account_id], references: [account_id], onDelete: Cascade)
+  amount              Decimal
+  currency            Currency
+  created_at          DateTime @default(now())
+
+  @@map("received_transactions")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Currency {
+  USD
+  EUR
+  UAH
+}
