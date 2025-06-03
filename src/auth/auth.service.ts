@@ -1,11 +1,9 @@
 import * as bcrypt from 'bcryptjs';
 import { Injectable, NotFoundException, Response } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { IGoogleUser, IUser } from 'src/constants/types/user';
+import { IGoogleUser, IUser } from 'src/constants/types/user/user';
 import { JwtService } from '@nestjs/jwt';
-import {
-  EmailConfirmException,
-} from 'src/exceptions/custom.exceptions';
+import { EmailConfirmException } from 'src/exceptions/custom.exceptions';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +30,7 @@ export class AuthService {
   }
 
   async validateGoogleUser(profile: IGoogleUser) {
-    if (!profile.isEmailConfirmed) throw new EmailConfirmException();
+    if (!profile.is_email_confirm) throw new EmailConfirmException();
     const user = await this.usersService.findOneByEmail(profile.email);
     if (!user) return await this.usersService.createByGoogle(profile);
     return user;

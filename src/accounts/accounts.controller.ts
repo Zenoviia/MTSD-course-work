@@ -13,7 +13,7 @@ import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
 import { GetUser } from 'src/common/decorators/get-user.decorator';
 import { IUser } from 'src/constants/types/user/user';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { RolesGuard } from 'src/roles/guards/accounts/check-access.guard';
+import { AccountRolesGuard } from 'src/common/guards/accounts/check-access.guard';
 import { ReplenishmentBalanceDto } from './dto/replenishment-balance.dto';
 
 @Controller('accounts')
@@ -29,25 +29,25 @@ export class AccountsController {
     return await this.accountService.create(+id, createAccountDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Delete(':id')
-  async close(@Param('id') id: string) {
+  @UseGuards(JwtAuthGuard, AccountRolesGuard)
+  @Delete(':accountId')
+  async close(@Param('accountId') id: string) {
     return await this.accountService.close(+id);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch(':id/replenishment')
+  @UseGuards(JwtAuthGuard, AccountRolesGuard)
+  @Patch(':accountId/replenishment')
   async replenishment(
-    @Param('id') id: string,
+    @Param('accountId') id: string,
     @Body() body: ReplenishmentBalanceDto,
   ) {
     return await this.accountService.replenishment(+id, body.balance);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch(':id/withdrawal')
+  @UseGuards(JwtAuthGuard, AccountRolesGuard)
+  @Patch(':accountId/withdrawal')
   async withdrawal(
-    @Param('id') id: string,
+    @Param('accountId') id: string,
     @Body() body: ReplenishmentBalanceDto,
   ) {
     return await this.accountService.withdrawal(+id, body.balance);

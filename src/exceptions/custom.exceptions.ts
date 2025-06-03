@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
@@ -60,6 +61,12 @@ export class AccountNotFoundException extends NotFoundException {
 
 export class AccountBalanceException extends ForbiddenException {
   constructor() {
-    super('You cannot close an account with a non-zero balance ');
+    super('You cannot close an account with a non-zero balance');
+  }
+}
+
+export class TransferException extends BadRequestException {
+  constructor() {
+    super('Unable to transfer money to the same account');
   }
 }
