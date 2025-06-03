@@ -51,3 +51,15 @@ export class UserCreateException extends InternalServerErrorException {
     super('Couldn`t create user');
   }
 }
+
+export class AccountNotFoundException extends NotFoundException {
+  constructor() {
+    super('Account not found');
+  }
+}
+
+export class AccountBalanceException extends ForbiddenException {
+  constructor() {
+    super('You cannot close an account with a non-zero balance ');
+  }
+}
