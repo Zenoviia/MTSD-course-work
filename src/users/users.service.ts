@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { BCRYPT } from 'src/constants/enums/bcrypt/bcrypt';
 import {
+  AccountException,
   TokenException,
   UserCreateException,
   UserNotFoundException,
@@ -12,6 +13,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EMAIL } from 'src/constants/enums/email/email';
 import { EmailService } from 'src/email/email.service';
+import { Currency } from '@prisma/client';
+import { GetBalanceDto } from './dto/currency.dto';
 
 @Injectable()
 export class UsersService {
@@ -96,5 +99,21 @@ export class UsersService {
 
   async removeOverdue(user_id: number) {
     return await this.prisma.user.delete({ where: { user_id } });
+  }
+
+  async getBalance(id: number, currencyDto: GetBalanceDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { user_id: id },
+      include: {
+        accounts: {
+          where: { currency: currencyDto.currency },
+          select: { balance: true },
+        },
+      },
+    });
+    if (!user) throw new UserCreateException();
+    if (!user.accounts || !user.accounts.length) throw new AccountException();
+
+    return { balance: user.accounts[0].balance };
   }
 }

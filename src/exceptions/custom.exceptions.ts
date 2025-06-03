@@ -70,3 +70,9 @@ export class TransferException extends BadRequestException {
     super('Unable to transfer money to the same account');
   }
 }
+
+export class AccountException extends ForbiddenException {
+  constructor() {
+    super('You haven`t account');
+  }
+}

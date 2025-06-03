@@ -7,6 +7,7 @@ import { EmailModule } from './email/email.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { CurrencyConverterModule } from './currency-converter/currency-converter.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     ScheduleModule,
     AccountsModule,
     TransactionsModule,
+    CurrencyConverterModule,
   ],
 })
 export class AppModule {}
