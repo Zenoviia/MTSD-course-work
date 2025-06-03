@@ -8,6 +8,8 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { CurrencyConverterModule } from './currency-converter/currency-converter.module';
+import { SentTransactionsModule } from './sent-transactions/sent-transactions.module';
+import { ReceivedTransactionsModule } from './received-transactions/received-transactions.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { CurrencyConverterModule } from './currency-converter/currency-converter
     AccountsModule,
     TransactionsModule,
     CurrencyConverterModule,
+    SentTransactionsModule,
+    ReceivedTransactionsModule,
   ],
 })
 export class AppModule {}

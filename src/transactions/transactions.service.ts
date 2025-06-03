@@ -4,9 +4,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { TransferException } from 'src/exceptions/custom.exceptions';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { Decimal } from '@prisma/client/runtime/library';
-import { ILogSentTransaction } from 'src/constants/types/transactions/logSentTransaction';
-import { ILogReceivedTransaction } from 'src/constants/types/transactions/logReceivedTransaction';
 import { CurrencyConverterService } from 'src/currency-converter/currency-converter.service';
+import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
+import { ReceivedTransactionsService } from 'src/received-transactions/received-transactions.service';
 
 @Injectable()
 export class TransactionsService {
@@ -14,6 +14,8 @@ export class TransactionsService {
     private readonly prisma: PrismaService,
     private readonly accountsService: AccountsService,
     private readonly converterService: CurrencyConverterService,
+    private readonly sentTransactionsService: SentTransactionsService,
+    private readonly receivedTransactionsService: ReceivedTransactionsService,
   ) {}
 
   async transfer(
@@ -42,14 +44,14 @@ export class TransactionsService {
         convertedAmount,
       );
 
-      await this.logSentTransaction({
+      await this.sentTransactionsService.create({
         senderId,
         senderAccountId,
         amount,
         currency: sender.currency,
       });
 
-      await this.logReceivedTransaction({
+      await this.receivedTransactionsService.create({
         receiverId: receiver.user_id,
         receiverAccountId,
         amount: convertedAmount,
@@ -71,60 +73,10 @@ export class TransactionsService {
     }
   }
 
-  async logSentTransaction(transaction: ILogSentTransaction) {
-    return this.prisma.sentTransaction.create({
-      data: {
-        sender_id: transaction.senderId,
-        sender_account_id: transaction.senderAccountId,
-        amount: transaction.amount,
-        currency: transaction.currency,
-      },
-    });
-  }
-
-  async logReceivedTransaction(transaction: ILogReceivedTransaction) {
-    return this.prisma.receivedTransaction.create({
-      data: {
-        receiver_id: transaction.receiverId,
-        receiver_account_id: transaction.receiverAccountId,
-        amount: transaction.amount,
-        currency: transaction.currency,
-      },
-    });
-  }
-
-  async getDentTransactionsHistory(id: number) {
-    return await this.prisma.sentTransaction.findMany({
-      where: {
-        sender_id: id,
-      },
-      include: {
-        sender_account: { select: { account_id: true } },
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    });
-  }
-
-  async getReceivedTransactionsHistory(id: number) {
-    return await this.prisma.receivedTransaction.findMany({
-      where: {
-        receiver_id: id,
-      },
-      include: {
-        receiver_account: { select: { account_id: true } },
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    });
-  }
-
   async getHistory(id: number) {
-    const sentTransactions = await this.getDentTransactionsHistory(id);
-    const receivedTransactions = await this.getReceivedTransactionsHistory(id);
-    const allTransactions = [...sentTransactions, ...receivedTransactions];
+    const sent = await this.sentTransactionsService.getHistory(id);
+    const received = await this.receivedTransactionsService.getHistory(id);
+    const allTransactions = [...sent, ...received];
     allTransactions.sort(
       (a, b) => b.created_at.getTime() - a.created_at.getTime(),
     );
