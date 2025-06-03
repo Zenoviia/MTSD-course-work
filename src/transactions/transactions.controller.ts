@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
 import { GetUser } from 'src/common/decorators/get-user.decorator';
@@ -22,5 +22,11 @@ export class TransactionsController {
       transferFundsDto,
       +user_id,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async transactionsHistory(@GetUser() id: IUser) {
+    return await this.transactionsService.getHistory(+id);
   }
 }
