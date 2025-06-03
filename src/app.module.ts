@@ -10,6 +10,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { CurrencyConverterModule } from './currency-converter/currency-converter.module';
 import { SentTransactionsModule } from './sent-transactions/sent-transactions.module';
 import { ReceivedTransactionsModule } from './received-transactions/received-transactions.module';
+import { DepositsModule } from './deposits/deposits.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ReceivedTransactionsModule } from './received-transactions/received-tra
     CurrencyConverterModule,
     SentTransactionsModule,
     ReceivedTransactionsModule,
+    DepositsModule,
   ],
 })
 export class AppModule {}

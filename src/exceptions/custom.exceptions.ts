@@ -76,3 +76,9 @@ export class AccountException extends ForbiddenException {
     super('You haven`t account');
   }
 }
+
+export class DepositNotFoundException extends NotFoundException {
+  constructor() {
+    super('Deposit not found');
+  }
+}

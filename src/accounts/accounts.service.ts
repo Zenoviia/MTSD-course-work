@@ -33,19 +33,19 @@ export class AccountsService {
     return await this.prisma.account.delete({ where: { account_id: id } });
   }
 
-  async replenishment(id: number, balance: string) {
+  async replenishment(id: number, amount: string) {
     await this.findOneById(id);
     return await this.prisma.account.update({
       where: { account_id: id },
-      data: { balance: { increment: parseFloat(balance) } },
+      data: { balance: { increment: parseFloat(amount) } },
     });
   }
 
-  async withdrawal(id: number, balance: string) {
+  async withdrawal(id: number, amount: string) {
     await this.findOneById(id);
     return await this.prisma.account.update({
       where: { account_id: id },
-      data: { balance: { decrement: parseFloat(balance) } },
+      data: { balance: { decrement: parseFloat(amount) } },
     });
   }
 }
