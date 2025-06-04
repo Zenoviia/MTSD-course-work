@@ -1,4 +1,6 @@
-export const API_DOCS = {
+import { Role } from '@prisma/client';
+
+export const USER_API_DOCS = {
   register: {
     summary: 'Register a new user',
     status: 201,
@@ -13,15 +15,21 @@ export const API_DOCS = {
     summary: 'Get all users',
     status: 200,
     description: 'Returns a list of all users',
+    authRequired: true,
+    role: Role.ADMIN,
   },
   getUserDetails: {
     summary: 'Get user details by ID',
     status: 200,
     description: 'Returns detailed user information',
+    authRequired: true,
+    role: Role.ADMIN,
   },
   blockUser: {
     summary: 'Block user',
     status: 200,
     description: 'User status updated',
+    authRequired: true,
+    role: Role.ADMIN,
   },
 };

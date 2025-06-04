@@ -18,12 +18,15 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { AccountOwnerGuard } from 'src/common/guards/accounts/check-access.guard';
 import { ReplenishmentBalanceDto } from './dto/replenishment-balance.dto';
 import { Currency } from '@prisma/client';
+import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
+import { ACCOUNTS_API_DOCS } from 'src/constants/documentation/account/controller';
 
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountService: AccountsService) {}
 
   @UseGuards(JwtAuthGuard)
+  @ApiDocFor(ACCOUNTS_API_DOCS.createAccount)
   @Post()
   async create(
     @GetUser() id: IUser,
@@ -33,6 +36,7 @@ export class AccountsController {
   }
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
+  @ApiDocFor(ACCOUNTS_API_DOCS.closeAccount)
   @Delete(':accountId')
   async close(@Param('accountId') id: string) {
     return await this.accountService.close(+id);
@@ -40,6 +44,7 @@ export class AccountsController {
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
   @Patch(':accountId/replenishment')
+  @ApiDocFor(ACCOUNTS_API_DOCS.replenishment)
   async replenishment(
     @Param('accountId') account_id: string,
     @Body() body: ReplenishmentBalanceDto,
@@ -54,6 +59,7 @@ export class AccountsController {
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
   @Patch(':accountId/withdrawal')
+  @ApiDocFor(ACCOUNTS_API_DOCS.withdrawal)
   async withdrawal(
     @Param('accountId') account_id: string,
     @Body() body: ReplenishmentBalanceDto,
@@ -68,6 +74,7 @@ export class AccountsController {
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
   @Get(':accountId/balance')
+  @ApiDocFor(ACCOUNTS_API_DOCS.getBalance)
   async getBalance(
     @Param('accountId') account_id: string,
     @Query('currency', new ParseEnumPipe(Currency)) currency: Currency,
