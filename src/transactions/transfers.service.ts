@@ -29,7 +29,6 @@ export class TransfersService {
 
     return this.prisma.$transaction(async () => {
       const sender = await this.getAccount(senderAccountId);
-      this.checkBalance(sender.balance, amount);
       const receiver = await this.getAccount(receiverAccountId);
 
       const convertedAmount = await this.converterService.convert(
@@ -52,12 +51,6 @@ export class TransfersService {
   async getAccount(accountId: number) {
     const account = await this.accountsService.findOneById(accountId);
     return account;
-  }
-
-  checkBalance(balance: Decimal, amount: string) {
-    if (new Decimal(balance).lessThan(amount)) {
-      throw new BadRequestException('Insufficient funds');
-    }
   }
 
   async getHistory(id: number) {
