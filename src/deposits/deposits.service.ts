@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDepositDto } from './dto/create-deposit.dto';
-import { DepositNotFoundException } from 'src/exceptions/custom.exceptions';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
 import { calculateCompoundInterest } from 'src/utils/deposits/deposit';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
+import { DepositNotFoundException } from 'src/exceptions/deposits/deposits';
 
 @Injectable()
 export class DepositsService {
@@ -29,7 +28,6 @@ export class DepositsService {
           end_date,
         },
       });
-
       return { success: true };
     });
   }

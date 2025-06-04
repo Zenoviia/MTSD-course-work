@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { IGoogleUser, IUser } from 'src/constants/types/user/user';
 import { JwtService } from '@nestjs/jwt';
-import { EmailConfirmException } from 'src/exceptions/custom.exceptions';
+import { EmailConfirmException } from 'src/exceptions/users/users';
+
 
 @Injectable()
 export class AuthService {

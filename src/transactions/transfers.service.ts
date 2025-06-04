@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { TransferFundsDto } from './dto/transfer-funds.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { TransferException } from 'src/exceptions/custom.exceptions';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { Decimal } from '@prisma/client/runtime/library';
 import { CurrencyConverterService } from 'src/currency-converter/currency-converter.service';
 import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
 import { ReceivedTransactionsService } from 'src/received-transactions/received-transactions.service';
 import { formatTransactions } from 'src/utils/transactions/transactions';
+import { TransferException } from 'src/exceptions/transfers/transfers';
 
 @Injectable()
 export class TransfersService {

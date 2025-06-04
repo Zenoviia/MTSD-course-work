@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsDate, Min, IsNotEmpty, Matches } from 'class-validator';
-import { AMOUNT } from 'src/constants/enums/amount/amount';
+import { AMOUNT } from 'src/constants/amount/amount';
 
 export class CreateDepositDto {
   @IsNotEmpty()

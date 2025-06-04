@@ -3,16 +3,17 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { BCRYPT } from 'src/constants/enums/bcrypt/bcrypt';
-import {
-  EmailConfirmException,
-  TokenException,
-  UserCreateException,
-  UserNotFoundException,
-} from 'src/exceptions/custom.exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EMAIL } from 'src/constants/enums/email/email';
 import { EmailService } from 'src/email/email.service';
+import {
+  BlockUserException,
+  EmailConfirmException,
+  UserForbiddenException,
+  UserNotFoundException,
+} from 'src/exceptions/users/users';
+import { TokenException } from 'src/exceptions/token/token';
 
 @Injectable()
 export class UsersService {
@@ -23,24 +24,25 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { password, ...userData } = createUserDto;
+    const { password, email, username } = createUserDto;
     const hashPassword = await bcrypt.hash(password, BCRYPT.SALT);
+    await this.checkUserExists(email, username);
 
     const user = await this.prisma.user.create({
       data: {
-        ...userData,
+        email,
+        username,
         password: hashPassword,
       },
     });
 
-    if (!user) throw new UserCreateException();
-    if (user.is_blocked) throw new UserCreateException();
+    this.checkUserBlocked(user.is_blocked);
 
-    const payload = {
+    const token = this.jwtService.sign({
       user_id: user.user_id,
       sub: user.user_id,
-    };
-    const token = this.jwtService.sign(payload);
+    });
+
     await this.emailService.sendConfirmationEmail(user.email, token);
     return { message: 'Logged in successfully' };
   }
@@ -71,7 +73,7 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new UserNotFoundException();
     if (!user.is_email_confirm) throw new EmailConfirmException();
-    if (user.is_blocked) throw new UserNotFoundException();
+    this.checkUserBlocked(user.is_blocked);
 
     return user;
   }
@@ -80,22 +82,19 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({
       where: { email: profile.email },
     });
-    if (!user) {
-      return await this.prisma.user.create({
-        data: profile,
-      });
-    }
-    if (user.is_blocked) throw new UserCreateException();
+    if (!user) return await this.create(profile);
+    this.checkUserBlocked(user.is_blocked);
+
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const updateUser = await this.prisma.user.update({
-      where: { user_id: id },
+  async update(user_id: number, updateUserDto: UpdateUserDto) {
+    await this.findOneById(user_id);
+    await this.prisma.user.update({
+      where: { user_id },
       data: updateUserDto,
     });
-    if (!updateUser) throw new UserCreateException();
-    return `User ${id} update successfully`;
+    return `User ${user_id} update successfully`;
   }
 
   async findOverdue() {
@@ -107,6 +106,7 @@ export class UsersService {
   }
 
   async removeOverdue(user_id: number) {
+    await this.findOneById(user_id);
     return await this.prisma.user.delete({ where: { user_id } });
   }
 
@@ -114,9 +114,10 @@ export class UsersService {
     return await this.prisma.user.findMany();
   }
 
-  async findFullInfoById(id: number) {
+  async findFullInfoById(user_id: number) {
+    await this.findOneById(user_id);
     const user = await this.prisma.user.findUnique({
-      where: { user_id: id },
+      where: { user_id },
       include: {
         accounts: true,
         deposits: true,
@@ -124,8 +125,17 @@ export class UsersService {
         received_transactions: true,
       },
     });
-
-    if (!user) throw new UserNotFoundException();
     return user;
+  }
+
+  private async checkUserExists(email: string, username: string) {
+    const existingUser = await this.prisma.user.findFirst({
+      where: { OR: [{ email }, { username }] },
+    });
+    if (existingUser) throw new UserForbiddenException();
+  }
+
+  private checkUserBlocked(is_blocked: boolean) {
+    if (is_blocked) throw new BlockUserException();
   }
 }

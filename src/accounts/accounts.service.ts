@@ -1,16 +1,15 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAccountDto } from './dto/create-account.dto';
-import {
-  AccountBalanceException,
-  AccountException,
-  AccountNotFoundException,
-  UserCreateException,
-} from 'src/exceptions/custom.exceptions';
+
 import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
 import { ReceivedTransactionsService } from 'src/received-transactions/received-transactions.service';
 import { GetBalanceDto } from './dto/balance.dto';
 import { CurrencyConverterService } from 'src/currency-converter/currency-converter.service';
+import {
+  AccountBalanceException,
+  AccountNotFoundException,
+} from 'src/exceptions/accounts/accounts';
 
 @Injectable()
 export class AccountsService {

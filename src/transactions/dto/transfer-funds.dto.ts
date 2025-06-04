@@ -1,9 +1,5 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  Matches,
-} from 'class-validator';
-import { AMOUNT } from 'src/constants/enums/amount/amount';
+import { IsInt, IsNotEmpty, Matches } from 'class-validator';
+import { AMOUNT } from 'src/constants/amount/amount';
 
 export class TransferFundsDto {
   @IsInt()
