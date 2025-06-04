@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { IGoogleUser, IUser } from 'src/constants/types/user/user';
+import { IGoogleUser, IUser } from '../constants/types/user/user';
 import { JwtService } from '@nestjs/jwt';
-import { EmailConfirmException } from 'src/exceptions/users/users';
+import { EmailConfirmException } from '../exceptions/users/users';
 
 @Injectable()
 export class AuthService {

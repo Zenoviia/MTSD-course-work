@@ -5,7 +5,11 @@ import {
   ApiBearerAuth,
   ApiSecurity,
 } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
+// Define Role enum locally if not available from '@prisma/client'
+export enum Role {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 
 export function ApiDocFor(apiDoc: {
   summary: string;

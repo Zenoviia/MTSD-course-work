@@ -1,14 +1,14 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
-import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
-import { GetUser } from 'src/common/decorators/user/get-user.decorator';
+import { JwtAuthGuard } from '../common/guards/auth/jwt-auth.guard';
+import { GetUser } from '../common/decorators/user/get-user.decorator';
 import { TransferFundsDto } from './dto/transfer-funds.dto';
-import { AccountOwnerGuard } from 'src/common/guards/accounts/check-access.guard';
-import { IUser } from 'src/constants/types/user/user';
-import { AdminGuard } from 'src/common/guards/admin/check-access.guard';
+import { AccountOwnerGuard } from '../common/guards/accounts/check-access.guard';
+import { IUser } from '../constants/types/user/user';
+import { AdminGuard } from '../common/guards/admin/check-access.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
-import { TRANSFERS_API_DOCS } from 'src/constants/documentation/transfers/controller';
+import { ApiDocFor } from '../common/decorators/documentation/api-doc.decorator';
+import { TRANSFERS_API_DOCS } from '../constants/documentation/transfers/controller';
 
 @ApiTags('Transfers')
 @Controller('transfers')

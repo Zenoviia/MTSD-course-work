@@ -7,11 +7,11 @@ import {
   Response,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CookieService } from 'src/cookie/cookie.service';
-import { LocalAuthGuard } from 'src/common/guards/auth/local-auth.guard';
-import { GoogleAuthGuard } from 'src/common/guards/auth/google-auth.guard';
-import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
-import { AUTH_API_DOCS } from 'src/constants/documentation/auth/controller';
+import { CookieService } from '../cookie/cookie.service';
+import { LocalAuthGuard } from '../common/guards/auth/local-auth.guard';
+import { GoogleAuthGuard } from '../common/guards/auth/google-auth.guard';
+import { ApiDocFor } from '../common/decorators/documentation/api-doc.decorator';
+import { AUTH_API_DOCS } from '../constants/documentation/auth/controller';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')

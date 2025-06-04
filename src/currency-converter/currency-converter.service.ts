@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/library';
-import { CONVERTER } from 'src/constants/enums/currency-converter/currency-converter';
+import { CONVERTER } from '../constants/enums/currency-converter/currency-converter';
 
 @Injectable()
 export class CurrencyConverterService {

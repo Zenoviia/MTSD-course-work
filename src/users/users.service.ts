@@ -1,19 +1,19 @@
 import * as bcrypt from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { BCRYPT } from 'src/constants/enums/bcrypt/bcrypt';
+import { BCRYPT } from '../constants/enums/bcrypt/bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { EMAIL } from 'src/constants/enums/email/email';
-import { EmailService } from 'src/email/email.service';
+import { EMAIL } from '../constants/enums/email/email';
+import { EmailService } from '../email/email.service';
 import {
   BlockUserException,
   EmailConfirmException,
   UserForbiddenException,
   UserNotFoundException,
-} from 'src/exceptions/users/users';
-import { TokenException } from 'src/exceptions/token/token';
+} from '../exceptions/users/users';
+import { TokenException } from '../exceptions/token/token';
 
 @Injectable()
 export class UsersService {

@@ -1,6 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import { Injectable } from '@nestjs/common';
-import { EMAIL } from 'src/constants/enums/email';
+import { EMAIL } from '../constants/enums/email/email';
 
 @Injectable()
 export class EmailService {
@@ -12,7 +12,8 @@ export class EmailService {
     },
   });
 
-  async sendConfirmationEmail(email: string, token: string) {
+async sendConfirmationEmail(email: string, token: string) {
+  try {
     const confirmationUrl = `${EMAIL.CONFIRM_LINK}${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -22,5 +23,10 @@ export class EmailService {
     };
 
     await this.transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Email sending failed:', error);
+    throw new Error('Email could not be sent');
   }
+}
+
 }

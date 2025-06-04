@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 
-import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
-import { ReceivedTransactionsService } from 'src/received-transactions/received-transactions.service';
+import { SentTransactionsService } from '../sent-transactions/sent-transactions.service';
+import { ReceivedTransactionsService } from '../received-transactions/received-transactions.service';
 import { GetBalanceDto } from './dto/balance.dto';
-import { CurrencyConverterService } from 'src/currency-converter/currency-converter.service';
+import { CurrencyConverterService } from '../currency-converter/currency-converter.service';
 import {
   AccountBalanceException,
   AccountNotFoundException,
-} from 'src/exceptions/accounts/accounts';
+} from '../exceptions/accounts/accounts';
 import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()

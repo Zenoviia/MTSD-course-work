@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateDepositDto } from './dto/create-deposit.dto';
-import { AccountsService } from 'src/accounts/accounts.service';
-import { calculateCompoundInterest } from 'src/utils/deposits/deposit';
+import { AccountsService } from '../accounts/accounts.service';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
-import { DepositNotFoundException } from 'src/exceptions/deposits/deposits';
+import { DepositNotFoundException } from '../exceptions/deposits/deposits';
+import { calculateCompoundInterest } from '../utils/deposits/deposits';
 
 @Injectable()
 export class DepositsService {

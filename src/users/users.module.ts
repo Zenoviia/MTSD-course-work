@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from '../prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
-import { CookieModule } from 'src/cookie/cookie.module';
-import { EmailModule } from 'src/email/email.module';
+import { CookieModule } from '../cookie/cookie.module';
+import { EmailModule } from '../email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({

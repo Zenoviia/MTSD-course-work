@@ -7,18 +7,18 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guards/auth/jwt-auth.guard';
 import { DepositsService } from './deposits.service';
-import { GetUser } from 'src/common/decorators/user/get-user.decorator';
-import { IUser } from 'src/constants/types/user/user';
+import { GetUser } from '../common/decorators/user/get-user.decorator';
+import { IUser } from '../constants/types/user/user';
 import { CreateDepositDto } from './dto/create-deposit.dto';
-import { DepositOwnerGuard } from 'src/common/guards/deposits/check-access.guard';
-import { AccountOwnerGuard } from 'src/common/guards/accounts/check-access.guard';
+import { DepositOwnerGuard } from '../common/guards/deposits/check-access.guard';
+import { AccountOwnerGuard } from '../common/guards/accounts/check-access.guard';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
-import { AdminGuard } from 'src/common/guards/admin/check-access.guard';
+import { AdminGuard } from '../common/guards/admin/check-access.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
-import { DEPOSITS_API_DOCS } from 'src/constants/documentation/deposits/controller';
+import { ApiDocFor } from '../common/decorators/documentation/api-doc.decorator';
+import { DEPOSITS_API_DOCS } from '../constants/documentation/deposits/controller';
 
 @ApiTags('Deposits')
 @Controller('deposits')

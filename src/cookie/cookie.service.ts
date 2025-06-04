@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { COOKIE } from 'src/constants/enums/cookie';
+import { COOKIE } from '../constants/enums/cookie/cookie';
 
 @Injectable()
 export class CookieService {

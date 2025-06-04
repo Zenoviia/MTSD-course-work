@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ILogReceivedTransaction } from 'src/constants/types/transactions/logReceivedTransaction';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { ILogReceivedTransaction } from '../constants/types/transactions/logReceivedTransaction';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ReceivedTransactionsService {

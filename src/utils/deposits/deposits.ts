@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { DEPOSITS } from 'src/constants/enums/deposits/deposits';
+import { DEPOSITS } from '../../constants/enums/deposits/deposits';
 
 export function calculateCompoundInterest(
   amount: string,

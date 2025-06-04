@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { AccountsController } from './accounts.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { SentTransactionsModule } from 'src/sent-transactions/sent-transactions.module';
-import { ReceivedTransactionsModule } from 'src/received-transactions/received-transactions.module';
-import { CurrencyConverterModule } from 'src/currency-converter/currency-converter.module';
+import { PrismaModule } from '../prisma/prisma.module';
+import { SentTransactionsModule } from '../sent-transactions/sent-transactions.module';
+import { ReceivedTransactionsModule } from '../received-transactions/received-transactions.module';
+import { CurrencyConverterModule } from '../currency-converter/currency-converter.module';
 
 @Module({
   imports: [

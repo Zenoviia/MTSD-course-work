@@ -11,13 +11,13 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { CookieService } from 'src/cookie/cookie.service';
-import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
-import { AdminGuard } from 'src/common/guards/admin/check-access.guard';
+import { CookieService } from '../cookie/cookie.service';
+import { JwtAuthGuard } from '../common/guards/auth/jwt-auth.guard';
+import { AdminGuard } from '../common/guards/admin/check-access.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
-import { USER_API_DOCS } from 'src/constants/documentation/user/controller';
+import { ApiDocFor } from '../common/decorators/documentation/api-doc.decorator';
+import { USER_API_DOCS } from '../constants/documentation/user/controller';
 
 @ApiTags('Users')
 @Controller('users')

@@ -11,15 +11,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
-import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
-import { GetUser } from 'src/common/decorators/user/get-user.decorator';
-import { IUser } from 'src/constants/types/user/user';
+import { JwtAuthGuard } from '../common/guards/auth/jwt-auth.guard';
+import { GetUser } from '../common/decorators/user/get-user.decorator';
+import { IUser } from '../constants/types/user/user';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { AccountOwnerGuard } from 'src/common/guards/accounts/check-access.guard';
+import { AccountOwnerGuard } from '../common/guards/accounts/check-access.guard';
 import { ReplenishmentBalanceDto } from './dto/replenishment-balance.dto';
-import { Currency } from '@prisma/client';
-import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
-import { ACCOUNTS_API_DOCS } from 'src/constants/documentation/account/controller';
+
+
+
+import { ApiDocFor } from '../common/decorators/documentation/api-doc.decorator';
+import { ACCOUNTS_API_DOCS } from '../constants/documentation/account/controller';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Accounts')
