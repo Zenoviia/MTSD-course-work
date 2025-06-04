@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { GetUser } from 'src/common/decorators/user/get-user.decorator';
 import { IUser } from 'src/constants/types/user/user';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { AccountOwnerGuard } from 'src/common/guards/accounts/check-access.guard';

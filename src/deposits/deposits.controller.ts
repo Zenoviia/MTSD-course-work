@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
 import { DepositsService } from './deposits.service';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { GetUser } from 'src/common/decorators/user/get-user.decorator';
 import { IUser } from 'src/constants/types/user/user';
 import { CreateDepositDto } from './dto/create-deposit.dto';
 import { DepositOwnerGuard } from 'src/common/guards/deposits/check-access.guard';

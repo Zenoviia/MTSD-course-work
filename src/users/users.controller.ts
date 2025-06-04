@@ -13,9 +13,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { CookieService } from 'src/cookie/cookie.service';
 import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
-import { AdminGuard } from 'src/common/guards/admin/check-access.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
+import { API_DOCS } from 'src/constants/documentation/user/controller';
+import { AdminGuard } from 'src/common/guards/admin/check-access.guard';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(
@@ -24,11 +28,13 @@ export class UsersController {
   ) {}
 
   @Post('registration')
+  @ApiDocFor(API_DOCS.register)
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
 
   @Post('confirm')
+  @ApiDocFor(API_DOCS.confirmEmail)
   async confirmEmail(@Query('token') token: string, @Response() res) {
     const confirmEmail = await this.usersService.confirmEmail(token);
     this.cookieService.setUserCookie(res, token);
@@ -37,18 +43,21 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Get()
+  @ApiDocFor(API_DOCS.getAllUsers)
   async getAllUsers() {
     return await this.usersService.getAllUsers();
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Get(':userId')
+  @ApiDocFor(API_DOCS.getUserDetails)
   async getOneFullInfo(@Param('userId') id: string) {
     return await this.usersService.findFullInfoById(+id);
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Patch(':userId/blocked')
+  @ApiDocFor(API_DOCS.blockUser)
   async getBlocked(
     @Param('userId') id: string,
     @Body() updateUsersDto: UpdateUserDto,
