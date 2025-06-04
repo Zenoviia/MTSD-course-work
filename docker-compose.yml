@@ -18,7 +18,7 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/home/node/app/src
-    command: npm run start:dev
+    command: sh -c "npx prisma migrate deploy --schema ./prisma/schema.prisma && npm run start:dev"
 
   db:
     container_name: db

@@ -64,7 +64,7 @@ export class AccountsService {
   async withdrawal(account_id: number, user_id: number, amount: string) {
     const account = await this.findOneById(account_id);
 
-    if (account.balance.lt(new Decimal(amount))) {
+    if (new Decimal(account.balance).lt(new Decimal(amount))) {
       throw new AccountBalanceException();
     }
 
