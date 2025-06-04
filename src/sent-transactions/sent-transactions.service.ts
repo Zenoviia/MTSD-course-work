@@ -22,9 +22,6 @@ export class SentTransactionsService {
       where: {
         sender_id: id,
       },
-      include: {
-        sender_account: { select: { account_id: true } },
-      },
       orderBy: {
         created_at: 'desc',
       },

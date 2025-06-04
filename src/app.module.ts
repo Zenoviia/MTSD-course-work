@@ -6,7 +6,7 @@ import { CookieModule } from './cookie/cookie.module';
 import { EmailModule } from './email/email.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { AccountsModule } from './accounts/accounts.module';
-import { TransactionsModule } from './transactions/transactions.module';
+import { TransfersModule } from './transactions/transfers.module';
 import { CurrencyConverterModule } from './currency-converter/currency-converter.module';
 import { SentTransactionsModule } from './sent-transactions/sent-transactions.module';
 import { ReceivedTransactionsModule } from './received-transactions/received-transactions.module';
@@ -21,7 +21,7 @@ import { DepositsModule } from './deposits/deposits.module';
     EmailModule,
     ScheduleModule,
     AccountsModule,
-    TransactionsModule,
+    TransfersModule,
     CurrencyConverterModule,
     SentTransactionsModule,
     ReceivedTransactionsModule,

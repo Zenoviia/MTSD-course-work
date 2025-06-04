@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   Param,
+  ParseEnumPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
@@ -15,6 +17,7 @@ import { IUser } from 'src/constants/types/user/user';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { AccountOwnerGuard } from 'src/common/guards/accounts/check-access.guard';
 import { ReplenishmentBalanceDto } from './dto/replenishment-balance.dto';
+import { Currency } from '@prisma/client';
 
 @Controller('accounts')
 export class AccountsController {
@@ -38,18 +41,37 @@ export class AccountsController {
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
   @Patch(':accountId/replenishment')
   async replenishment(
-    @Param('accountId') id: string,
+    @Param('accountId') account_id: string,
     @Body() body: ReplenishmentBalanceDto,
+    @GetUser() user_id: string,
   ) {
-    return await this.accountService.replenishment(+id, body.amount);
+    return await this.accountService.replenishment(
+      +account_id,
+      +user_id,
+      body.amount,
+    );
   }
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
   @Patch(':accountId/withdrawal')
   async withdrawal(
-    @Param('accountId') id: string,
+    @Param('accountId') account_id: string,
     @Body() body: ReplenishmentBalanceDto,
+    @GetUser() user_id: string,
   ) {
-    return await this.accountService.withdrawal(+id, body.amount);
+    return await this.accountService.withdrawal(
+      +account_id,
+      +user_id,
+      body.amount,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard, AccountOwnerGuard)
+  @Get(':accountId/balance')
+  async getBalance(
+    @Param('accountId') account_id: string,
+    @Query('currency', new ParseEnumPipe(Currency)) currency: Currency,
+  ) {
+    return await this.accountService.getBalance(+account_id, { currency });
   }
 }

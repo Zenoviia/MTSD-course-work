@@ -3,12 +3,23 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import {
   AccountBalanceException,
+  AccountException,
   AccountNotFoundException,
+  UserCreateException,
 } from 'src/exceptions/custom.exceptions';
+import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
+import { ReceivedTransactionsService } from 'src/received-transactions/received-transactions.service';
+import { GetBalanceDto } from './dto/balance.dto';
+import { CurrencyConverterService } from 'src/currency-converter/currency-converter.service';
 
 @Injectable()
 export class AccountsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly converterService: CurrencyConverterService,
+    private readonly sentTransactionsService: SentTransactionsService,
+    private readonly receivedTransactionsService: ReceivedTransactionsService,
+  ) {}
 
   async create(id: number, createAccountDto: CreateAccountDto) {
     return await this.prisma.account.create({
@@ -33,19 +44,47 @@ export class AccountsService {
     return await this.prisma.account.delete({ where: { account_id: id } });
   }
 
-  async replenishment(id: number, amount: string) {
-    await this.findOneById(id);
-    return await this.prisma.account.update({
-      where: { account_id: id },
+  async replenishment(account_id: number, user_id: number, amount: string) {
+    await this.findOneById(account_id);
+    const account = await this.prisma.account.update({
+      where: { account_id },
       data: { balance: { increment: parseFloat(amount) } },
     });
+
+    await this.receivedTransactionsService.create({
+      receiverId: user_id,
+      receiverAccountId: account_id,
+      amount,
+      currency: account.currency,
+    });
+
+    return account;
   }
 
-  async withdrawal(id: number, amount: string) {
-    await this.findOneById(id);
-    return await this.prisma.account.update({
-      where: { account_id: id },
+  async withdrawal(account_id: number, user_id: number, amount: string) {
+    await this.findOneById(account_id);
+    const account = await this.prisma.account.update({
+      where: { account_id },
       data: { balance: { decrement: parseFloat(amount) } },
     });
+
+    await this.sentTransactionsService.create({
+      senderId: user_id,
+      senderAccountId: account_id,
+      amount,
+      currency: account.currency,
+    });
+
+    return account;
+  }
+
+  async getBalance(account_id: number, { currency }: GetBalanceDto) {
+    const account = await this.findOneById(account_id);
+    const convertedAmount = await this.converterService.convert(
+      String(account.balance),
+      account.currency,
+      currency,
+    );
+    return { balance: convertedAmount, currency: currency };
   }
 }

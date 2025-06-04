@@ -22,9 +22,9 @@ export class ReceivedTransactionsService {
       where: {
         receiver_id: id,
       },
-      include: {
-        receiver_account: { select: { account_id: true } },
-      },
+      // include: {
+      //   receiver_account: { select: { account_id: true } },
+      // },
       orderBy: {
         created_at: 'desc',
       },

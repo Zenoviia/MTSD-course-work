@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcryptjs';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { BCRYPT } from 'src/constants/enums/bcrypt/bcrypt';
 import {
-  AccountException,
+  EmailConfirmException,
   TokenException,
   UserCreateException,
   UserNotFoundException,
@@ -13,8 +13,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EMAIL } from 'src/constants/enums/email/email';
 import { EmailService } from 'src/email/email.service';
-import { Currency } from '@prisma/client';
-import { GetBalanceDto } from './dto/currency.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +32,10 @@ export class UsersService {
         password: hashPassword,
       },
     });
+
     if (!user) throw new UserCreateException();
+    if (user.is_blocked) throw new UserCreateException();
+
     const payload = {
       user_id: user.user_id,
       sub: user.user_id,
@@ -69,14 +70,22 @@ export class UsersService {
   async findOneByEmail(email: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new UserNotFoundException();
+    if (!user.is_email_confirm) throw new EmailConfirmException();
+    if (user.is_blocked) throw new UserNotFoundException();
+
     return user;
   }
 
   async createByGoogle(profile: CreateUserDto) {
-    const user = await this.prisma.user.create({
-      data: profile,
+    const user = await this.prisma.user.findUnique({
+      where: { email: profile.email },
     });
-    if (!user) throw new UserCreateException();
+    if (!user) {
+      return await this.prisma.user.create({
+        data: profile,
+      });
+    }
+    if (user.is_blocked) throw new UserCreateException();
     return user;
   }
 
@@ -101,19 +110,22 @@ export class UsersService {
     return await this.prisma.user.delete({ where: { user_id } });
   }
 
-  async getBalance(id: number, currencyDto: GetBalanceDto) {
+  async getAllUsers() {
+    return await this.prisma.user.findMany();
+  }
+
+  async findFullInfoById(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { user_id: id },
       include: {
-        accounts: {
-          where: { currency: currencyDto.currency },
-          select: { balance: true },
-        },
+        accounts: true,
+        deposits: true,
+        transactions: true,
+        received_transactions: true,
       },
     });
-    if (!user) throw new UserCreateException();
-    if (!user.accounts || !user.accounts.length) throw new AccountException();
 
-    return { balance: user.accounts[0].balance };
+    if (!user) throw new UserNotFoundException();
+    return user;
   }
 }

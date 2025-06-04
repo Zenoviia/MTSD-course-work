@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  ParseEnumPipe,
+  Patch,
   Post,
   Query,
   Response,
@@ -13,9 +13,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { CookieService } from 'src/cookie/cookie.service';
 import { JwtAuthGuard } from 'src/common/guards/auth/jwt-auth.guard';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
-import { IUser } from 'src/constants/types/user/user';
-import { Currency } from '@prisma/client';
+import { AdminGuard } from 'src/common/guards/admin/check-access.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -36,12 +35,26 @@ export class UsersController {
     return res.send(confirmEmail);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('/balance')
-  async getBalance(
-    @Query('currency', new ParseEnumPipe(Currency)) currency: Currency,
-    @GetUser() id: IUser,
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get()
+  async getAllUsers() {
+    return await this.usersService.getAllUsers();
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get(':userId')
+  async getOneFullInfo(@Param('userId') id: string) {
+    return await this.usersService.findFullInfoById(+id);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':userId/blocked')
+  async getBlocked(
+    @Param('userId') id: string,
+    @Body() updateUsersDto: UpdateUserDto,
+    @Response() res,
   ) {
-    return await this.usersService.getBalance(+id, { currency });
+    this.cookieService.setUserCookie(res, '');
+    return res.send(await this.usersService.update(+id, updateUsersDto));
   }
 }

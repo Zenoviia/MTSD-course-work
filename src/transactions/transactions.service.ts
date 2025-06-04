@@ -7,9 +7,10 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { CurrencyConverterService } from 'src/currency-converter/currency-converter.service';
 import { SentTransactionsService } from 'src/sent-transactions/sent-transactions.service';
 import { ReceivedTransactionsService } from 'src/received-transactions/received-transactions.service';
+import { formatTransactions } from 'src/utils/transactions/transactions';
 
 @Injectable()
-export class TransactionsService {
+export class TransfersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly accountsService: AccountsService,
@@ -18,19 +19,18 @@ export class TransactionsService {
     private readonly receivedTransactionsService: ReceivedTransactionsService,
   ) {}
 
-  async transfer(
+  async create(
     senderAccountId: number,
-    dto: TransferFundsDto,
     senderId: number,
+    dto: TransferFundsDto,
   ) {
     const { receiverAccountId, amount } = dto;
     if (senderAccountId === receiverAccountId) throw new TransferException();
 
     return this.prisma.$transaction(async () => {
       const sender = await this.getAccount(senderAccountId);
-      const receiver = await this.getAccount(receiverAccountId);
-
       this.checkBalance(sender.balance, amount);
+      const receiver = await this.getAccount(receiverAccountId);
 
       const convertedAmount = await this.converterService.convert(
         amount,
@@ -38,25 +38,12 @@ export class TransactionsService {
         receiver.currency,
       );
 
-      await this.accountsService.withdrawal(senderAccountId, amount);
+      await this.accountsService.withdrawal(senderAccountId, senderId, amount);
       await this.accountsService.replenishment(
         receiverAccountId,
+        receiver.user_id,
         convertedAmount,
       );
-
-      await this.sentTransactionsService.create({
-        senderId,
-        senderAccountId,
-        amount,
-        currency: sender.currency,
-      });
-
-      await this.receivedTransactionsService.create({
-        receiverId: receiver.user_id,
-        receiverAccountId,
-        amount: convertedAmount,
-        currency: receiver.currency,
-      });
 
       return { success: true };
     });
@@ -76,10 +63,7 @@ export class TransactionsService {
   async getHistory(id: number) {
     const sent = await this.sentTransactionsService.getHistory(id);
     const received = await this.receivedTransactionsService.getHistory(id);
-    const allTransactions = [...sent, ...received];
-    allTransactions.sort(
-      (a, b) => b.created_at.getTime() - a.created_at.getTime(),
-    );
-    return allTransactions;
+
+    return formatTransactions(sent, received);
   }
 }
