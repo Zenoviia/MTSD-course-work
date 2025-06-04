@@ -66,6 +66,8 @@ export class UsersService {
       where: { user_id: id },
     });
     if (!user) throw new UserNotFoundException();
+    this.checkUserBlocked(user.is_blocked);
+
     return user;
   }
 

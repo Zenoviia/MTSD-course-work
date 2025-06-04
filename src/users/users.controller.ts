@@ -63,7 +63,6 @@ export class UsersController {
     @Body() updateUsersDto: UpdateUserDto,
     @Response() res,
   ) {
-    this.cookieService.setUserCookie(res, '');
     return res.send(await this.usersService.update(+id, updateUsersDto));
   }
 }

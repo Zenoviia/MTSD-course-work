@@ -5,7 +5,6 @@ import { IGoogleUser, IUser } from 'src/constants/types/user/user';
 import { JwtService } from '@nestjs/jwt';
 import { EmailConfirmException } from 'src/exceptions/users/users';
 
-
 @Injectable()
 export class AuthService {
   constructor(
