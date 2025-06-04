@@ -63,7 +63,6 @@ export class TransfersService {
   async getHistory(id: number) {
     const sent = await this.sentTransactionsService.getHistory(id);
     const received = await this.receivedTransactionsService.getHistory(id);
-
     return formatTransactions(sent, received);
   }
 }
