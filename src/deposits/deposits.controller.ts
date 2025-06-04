@@ -26,8 +26,8 @@ export class DepositsController {
   constructor(private readonly depositsService: DepositsService) {}
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
-  @Post(':accountId')
   @ApiDocFor(DEPOSITS_API_DOCS.createDeposit)
+  @Post(':accountId')
   async create(
     @Body() depositFundsDto: CreateDepositDto,
     @GetUser() user_id: IUser,
@@ -41,15 +41,15 @@ export class DepositsController {
   }
 
   @UseGuards(JwtAuthGuard, DepositOwnerGuard)
-  @Get(':depositId/final-amount')
   @ApiDocFor(DEPOSITS_API_DOCS.getFinalAmount)
+  @Get(':depositId/final-amount')
   async getFinalAmount(@Param('depositId') id: string) {
     return await this.depositsService.calculateFinalAmount(+id);
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @Patch(':depositId/profit')
   @ApiDocFor(DEPOSITS_API_DOCS.changeDepositProfit)
+  @Patch(':depositId/profit')
   async changeDepositProfit(
     @Param('depositId') id: string,
     @Body() depositUpdateDto: UpdateDepositDto,

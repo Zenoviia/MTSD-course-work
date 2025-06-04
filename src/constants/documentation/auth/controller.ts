@@ -1,5 +1,3 @@
-import { Role } from '@prisma/client';
-
 export const AUTH_API_DOCS = {
   login: {
     summary: 'User login',

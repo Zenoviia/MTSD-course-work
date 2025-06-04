@@ -16,8 +16,8 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransfersService) {}
 
   @UseGuards(JwtAuthGuard, AccountOwnerGuard)
-  @Post(':accountId')
   @ApiDocFor(TRANSFERS_API_DOCS.create)
+  @Post(':accountId')
   async create(
     @Body() transferFundsDto: TransferFundsDto,
     @Param('accountId') account_id: string,
@@ -31,8 +31,8 @@ export class TransactionsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
   @ApiDocFor(TRANSFERS_API_DOCS.transactionsHistory)
+  @Get()
   async transactionsHistory(@GetUser() id: IUser) {
     return await this.transactionsService.getHistory(+id);
   }

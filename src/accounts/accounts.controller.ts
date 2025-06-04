@@ -20,7 +20,9 @@ import { ReplenishmentBalanceDto } from './dto/replenishment-balance.dto';
 import { Currency } from '@prisma/client';
 import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
 import { ACCOUNTS_API_DOCS } from 'src/constants/documentation/account/controller';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Accounts')
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountService: AccountsService) {}

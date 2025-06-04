@@ -12,7 +12,9 @@ import { LocalAuthGuard } from 'src/common/guards/auth/local-auth.guard';
 import { GoogleAuthGuard } from 'src/common/guards/auth/google-auth.guard';
 import { ApiDocFor } from 'src/common/decorators/documentation/api-doc.decorator';
 import { AUTH_API_DOCS } from 'src/constants/documentation/auth/controller';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(

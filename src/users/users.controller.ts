@@ -27,14 +27,14 @@ export class UsersController {
     private readonly cookieService: CookieService,
   ) {}
 
-  @Post('registration')
   @ApiDocFor(USER_API_DOCS.register)
+  @Post('registration')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
 
-  @Post('confirm')
   @ApiDocFor(USER_API_DOCS.confirmEmail)
+  @Post('confirm')
   async confirmEmail(@Query('token') token: string, @Response() res) {
     const confirmEmail = await this.usersService.confirmEmail(token);
     this.cookieService.setUserCookie(res, token);
@@ -42,22 +42,22 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @Get()
   @ApiDocFor(USER_API_DOCS.getAllUsers)
+  @Get()
   async getAllUsers() {
     return await this.usersService.getAllUsers();
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @Get(':userId')
   @ApiDocFor(USER_API_DOCS.getUserDetails)
+  @Get(':userId')
   async getOneFullInfo(@Param('userId') id: string) {
     return await this.usersService.findFullInfoById(+id);
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @Patch(':userId/blocked')
   @ApiDocFor(USER_API_DOCS.blockUser)
+  @Patch(':userId/blocked')
   async getBlocked(
     @Param('userId') id: string,
     @Body() updateUsersDto: UpdateUserDto,

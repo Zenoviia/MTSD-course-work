@@ -10,6 +10,7 @@ import {
   AccountBalanceException,
   AccountNotFoundException,
 } from 'src/exceptions/accounts/accounts';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AccountsService {
@@ -61,8 +62,13 @@ export class AccountsService {
   }
 
   async withdrawal(account_id: number, user_id: number, amount: string) {
-    await this.findOneById(account_id);
-    const account = await this.prisma.account.update({
+    const account = await this.findOneById(account_id);
+
+    if (account.balance.lt(new Decimal(amount))) {
+      throw new AccountBalanceException();
+    }
+
+    const accountWithdrawal = await this.prisma.account.update({
       where: { account_id },
       data: { balance: { decrement: parseFloat(amount) } },
     });
@@ -74,7 +80,7 @@ export class AccountsService {
       currency: account.currency,
     });
 
-    return account;
+    return accountWithdrawal;
   }
 
   async getBalance(account_id: number, { currency }: GetBalanceDto) {
